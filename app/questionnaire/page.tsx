@@ -299,7 +299,7 @@ export default function VarkQuestionnaire() {
   //   preference: LearningPreference;
   // }) => {
   //   try {
-  //     const response = await fetch("http://localhost:3005/result", {
+  //     const response = await fetch("https://vidyagiribackend.vercel.app/result", {
   //       method: "POST",
   //       headers: {
   //         "Content-Type": "application/json",
@@ -330,7 +330,7 @@ export default function VarkQuestionnaire() {
 
   const sendResultsToBackend = async (results: { preference: LearningPreference }, token: string) => {
     try {
-      const response = await fetch("http://localhost:3005/result", {
+      const response = await fetch("https://vidyagiribackend.vercel.app/result", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

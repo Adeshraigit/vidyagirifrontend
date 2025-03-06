@@ -17,7 +17,7 @@ const Visual = () => {
   //   setDiagramUrl(null);
 
   //   try {
-  //     const response = await fetch('http://localhost:3005/diagram', {
+  //     const response = await fetch('https://vidyagiribackend.vercel.app/diagram', {
   //       method: 'POST',
   //       headers: {
   //         'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const Visual = () => {
     setDiagramUrl(null);
   
     try {
-      const response = await fetch('http://localhost:3005/diagram', {
+      const response = await fetch('https://vidyagiribackend.vercel.app/diagram', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
