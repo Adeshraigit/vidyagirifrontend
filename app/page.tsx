@@ -124,33 +124,78 @@ const HeroParallax = () => {
   )
 }
 
+// const FloatingIcons = () => {
+//   return (
+//     <div className="absolute inset-0 overflow-hidden">
+//       {[Eye, BookOpen, Brain, Headphones, HandMetal].map((Icon, index) => (
+//         <motion.div
+//           key={index}
+//           className="absolute text-emerald-500/20 dark:text-emerald-500/10"
+//           style={{
+//             top: `${Math.random() * 100}%`,
+//             left: `${Math.random() * 100}%`,
+//           }}
+//           animate={{
+//             y: [0, -10, 0],
+//             opacity: [0.2, 0.5, 0.2],
+//           }}
+//           transition={{
+//             duration: 5 + Math.random() * 5,
+//             repeat: Number.POSITIVE_INFINITY,
+//             delay: Math.random() * 5,
+//           }}
+//         >
+//           <Icon size={30 + Math.random() * 40} />
+//         </motion.div>
+//       ))}
+//     </div>
+//   )
+// }
 const FloatingIcons = () => {
+  const icons = [Eye, BookOpen, Brain, Headphones, HandMetal];
+  const [iconStyles, setIconStyles] = useState<
+    { top: string; left: string; size: number; delay: number; duration: number }[]
+  >([]);
+
+  useEffect(() => {
+    setIconStyles(
+      icons.map(() => ({
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+        size: 30 + Math.random() * 40,
+        delay: Math.random() * 5,
+        duration: 5 + Math.random() * 5,
+      }))
+    );
+  }, []);
+
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {[Eye, BookOpen, Brain, Headphones, HandMetal].map((Icon, index) => (
+      {icons.map((Icon, index) => (
         <motion.div
           key={index}
           className="absolute text-emerald-500/20 dark:text-emerald-500/10"
           style={{
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
+            top: iconStyles[index]?.top,
+            left: iconStyles[index]?.left,
           }}
           animate={{
             y: [0, -10, 0],
             opacity: [0.2, 0.5, 0.2],
           }}
           transition={{
-            duration: 5 + Math.random() * 5,
+            duration: iconStyles[index]?.duration,
             repeat: Number.POSITIVE_INFINITY,
-            delay: Math.random() * 5,
+            delay: iconStyles[index]?.delay,
           }}
         >
-          <Icon size={30 + Math.random() * 40} />
+          <Icon size={iconStyles[index]?.size} />
         </motion.div>
       ))}
     </div>
-  )
-}
+  );
+};
+
 
 const TestimonialCard = ({ quote, author, role }: { quote: string; author: string; role: string }) => {
   return (

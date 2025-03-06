@@ -4,8 +4,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { useAuth, useUser } from "@clerk/clerk-react"
+import { useUser } from "@clerk/clerk-react"
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs"
 
 // Types
 type VarkScores = {
@@ -271,58 +272,121 @@ export default function VarkQuestionnaire() {
     }
   };
 
-  const sendResultsToBackend = async (results: {
-    preference: LearningPreference;
-  }) => {
+  // const sendResultsToBackend = async (results: {
+  //   preference: LearningPreference;
+  // }) => {
+  //   try {
+  //     const response = await fetch("http://localhost:3005/result", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       credentials: "include",
+  //       body: JSON.stringify({
+  //         preference: results.preference,
+  //       }),
+  //     });
+  
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  
+  //     // Check the Content-Type header
+  //     const contentType = response.headers.get("content-type");
+  //     if (contentType && contentType.includes("application/json")) {
+  //       const data = await response.json();
+  //       console.log("Results successfully sent to backend:", data);
+  //     } else {
+  //       const text = await response.text();
+  //       console.log("Non-JSON response from backend:", text);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error sending results to backend:", error);
+  //   }
+  // };
+
+  const sendResultsToBackend = async (results: { preference: LearningPreference }, token: string) => {
     try {
       const response = await fetch("http://localhost:3005/result", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Pass token here
         },
         credentials: "include",
-        body: JSON.stringify({
-          preference: results.preference,
-        }),
+        body: JSON.stringify({ preference: results.preference }),
       });
   
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (_) {}
+        throw new Error(errorMessage);
       }
   
-      // Check the Content-Type header
-      const contentType = response.headers.get("content-type");
+      const contentType = response.headers.get("content-type")?.toLowerCase();
       if (contentType && contentType.includes("application/json")) {
         const data = await response.json();
-        console.log("Results successfully sent to backend:", data);
+        console.log("✅ Results successfully sent to backend:", data);
       } else {
         const text = await response.text();
-        console.log("Non-JSON response from backend:", text);
+        console.warn("⚠️ Non-JSON response from backend:", text);
       }
     } catch (error) {
-      console.error("Error sending results to backend:", error);
+      console.error("❌ Error sending results to backend:", error);
     }
   };
+  
+  const { getToken } = useAuth(); // Import from Clerk
 
-  const submitQuestionnaire = () => {
-    // Validation
-    if (Object.keys(selectedOptions).length !== VARK_QUESTIONS.length) {
-      const missingQuestions = VARK_QUESTIONS.filter((q) => !selectedOptions[q.id]).map((q) => q.id);
+const submitQuestionnaire = async () => {
+  // Validation: Ensure all questions are answered
+  if (Object.keys(selectedOptions).length !== VARK_QUESTIONS.length) {
+    const missingQuestions = VARK_QUESTIONS.filter((q) => !selectedOptions[q.id]).map((q) => q.id);
+    alert(`Please select an option for question(s): ${missingQuestions.join(", ")}`);
+    return;
+  }
 
-      alert(`Please select an option for question(s): ${missingQuestions.join(", ")}`);
-      return;
-    }
+  // Calculate the VARK scores and determine the learning preference
+  const scores = calculateVarkScores(selectedOptions);
+  const preference = determineLearningPreference(scores);
+  const note = getLearningPreferenceNote(preference);
 
-    const scores = calculateVarkScores(selectedOptions);
-    const preference = determineLearningPreference(scores);
-    const note = getLearningPreferenceNote(preference);
+  // Set results in state
+  setResults({ scores, preference, note });
 
-    // Set results in state
-    setResults({ scores, preference, note });
+  try {
+    // 🔹 Get the authentication token
+    const token = await getToken();
 
-    // Send results to the backend
-    sendResultsToBackend({ preference });
-  };
+    // 🔹 Send results to the backend with token
+    await sendResultsToBackend({ preference }, token ?? "");
+  } catch (error) {
+    console.error("❌ Failed to submit results:", error);
+  }
+};
+
+  // const submitQuestionnaire = () => {
+  //   // Validation
+  //   if (Object.keys(selectedOptions).length !== VARK_QUESTIONS.length) {
+  //     const missingQuestions = VARK_QUESTIONS.filter((q) => !selectedOptions[q.id]).map((q) => q.id);
+
+  //     alert(`Please select an option for question(s): ${missingQuestions.join(", ")}`);
+  //     return;
+  //   }
+
+  //   const scores = calculateVarkScores(selectedOptions);
+  //   const preference = determineLearningPreference(scores);
+  //   const note = getLearningPreferenceNote(preference);
+
+  //   // Set results in state
+  //   setResults({ scores, preference, note });
+
+  //   // Send results to the backend
+  //   sendResultsToBackend({ preference });
+  // };
 
   const resetQuestionnaire = () => {
     setSelectedOptions({});
