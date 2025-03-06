@@ -43,7 +43,7 @@ const Audio: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0); // Current progress in seconds
   const [totalDuration, setTotalDuration] = useState(0); // Estimated total duration in seconds
   const [sliderValue, setSliderValue] = useState(0); // For the draggable progress bar (0–100)
-  const [isDragging, setIsDragging] = useState(false);
+  const [, setIsDragging] = useState(false);
   // Instead of a slider for speed, use a dropdown:
   const [selectedRate, setSelectedRate] = useState(playbackOptions[2]); // Default to "1x"
 
@@ -56,7 +56,6 @@ const Audio: React.FC = () => {
     return () => {
       stopSpeech();
     };
-    isDragging
   }, []);
 
   /**
@@ -215,7 +214,7 @@ const Audio: React.FC = () => {
     if(isLoaded && !userId){
       router.push("/sign-in");
     }
-  }, [userId, isLoaded]);
+  }, [userId, isLoaded, router]);
 
   return (
     <section className="pt-32 pb-16 bg-green-100">

@@ -75,7 +75,7 @@ const Read: React.FC = () => {
     if(isLoaded && !userId){
       router.push("/sign-in");
     }
-  }, [userId, isLoaded]);
+  }, [userId, isLoaded, router]);
 
   return (
     <section className="pt-32 pb-16 bg-green-100">

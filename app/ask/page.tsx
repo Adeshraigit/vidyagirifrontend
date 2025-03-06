@@ -18,7 +18,7 @@ function Ask() {
     if(isLoaded && userId && user?.publicMetadata.preference){
       router.push(`/${preference}`);
     } 
-  }, [userId, isLoaded]);
+  }, [userId, isLoaded,router, preference, user]);
 
   return (
     <div>

@@ -208,18 +208,41 @@ const calculateVarkScores = (selectedOptions: Record<number, string>): VarkScore
   return scores
 }
 
+// const determineLearningPreference = (scores: VarkScores): LearningPreference => {
+//   const entries = Object.entries(scores) as [keyof VarkScores, number][]
+//   const maxScore = Math.max(...entries.map(([_, score]) => score))
+//   const maxCategories = entries.filter(([_, score]) => score === maxScore).map(([category]) => category)
+
+//   if (maxCategories.length > 1) return "Multimodal"
+
+//   if (maxCategories[0] === "Visual") return "Visual"
+//   if (maxCategories[0] === "Aural") return "Aural"
+//   if (maxCategories[0] === "Read_Write") return "Read/Write"
+//   return "Kinesthetic"
+// }
+
 const determineLearningPreference = (scores: VarkScores): LearningPreference => {
-  const entries = Object.entries(scores) as [keyof VarkScores, number][]
-  const maxScore = Math.max(...entries.map(([_, score]) => score))
-  const maxCategories = entries.filter(([_, score]) => score === maxScore).map(([category]) => category)
+  const entries = Object.entries(scores) as [keyof VarkScores, number][];
+  const maxScore = Math.max(...entries.map(([, score]) => score)); // `_` removed
 
-  if (maxCategories.length > 1) return "Multimodal"
+  const maxCategories = entries
+    .filter(([, score]) => score === maxScore) // `_` removed
+    .map(([category]) => category);
 
-  if (maxCategories[0] === "Visual") return "Visual"
-  if (maxCategories[0] === "Aural") return "Aural"
-  if (maxCategories[0] === "Read_Write") return "Read/Write"
-  return "Kinesthetic"
-}
+  if (maxCategories.length > 1) return "Multimodal";
+
+  switch (maxCategories[0]) {
+    case "Visual":
+      return "Visual";
+    case "Aural":
+      return "Aural";
+    case "Read_Write":
+      return "Read/Write";
+    default:
+      return "Kinesthetic";
+  }
+};
+
 
 const getLearningPreferenceNote = (preference: LearningPreference): string => {
   switch (preference) {
@@ -322,7 +345,9 @@ export default function VarkQuestionnaire() {
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
-        } catch (_) {}
+        } catch (err) {
+          console.error("Error parsing error message:", err);
+        }
         throw new Error(errorMessage);
       }
   
@@ -417,7 +442,7 @@ const submitQuestionnaire = async () => {
       alert("You have already submitted the questionnaire");
       router.push("/");
     }
-  }, [userId, isLoaded, router]);
+  }, [userId, isLoaded, router, user?.publicMetadata.formSubmitted, user]);
 
   return (
     <div className="min-h-screen bg-[#f0f9f0] flex items-center justify-center p-4">

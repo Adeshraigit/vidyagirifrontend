@@ -17,7 +17,7 @@ export default function About() {
             learning journey.
           </p>
           <p className="text-emerald-900 mt-4 text-lg">
-            Whether you're a student, educator, or lifelong learner, knowing your VARK preference can help you
+            Whether you&apos;re a student, educator, or lifelong learner, knowing your VARK preference can help you
             optimize information retention and make learning more effective.
           </p>
         </CardContent>

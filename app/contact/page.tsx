@@ -8,7 +8,7 @@ export default function Contact() {
         <Card className="w-full max-w-2xl shadow-lg border-emerald-100">
           <CardHeader className="bg-emerald-600 text-white text-center rounded-t-lg">
             <CardTitle className="text-2xl font-bold">Contact Us</CardTitle>
-            <CardDescription className="text-emerald-50">We'd love to hear from you! Reach out with any questions.</CardDescription>
+            <CardDescription className="text-emerald-50">We&apos;d love to hear from you! Reach out with any questions.</CardDescription>
           </CardHeader>
           <CardContent className="p-6 space-y-6">
             <div className="flex items-center space-x-4">

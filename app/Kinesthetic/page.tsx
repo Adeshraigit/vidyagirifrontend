@@ -68,7 +68,7 @@ const Kinesthetic: React.FC = () => {
       alert(`Your preferred learning style is ${preference}`);  
       router.push(`/${preference}`); 
     }
-  }, [userId, isLoaded]);
+  }, [userId, isLoaded, preference, router]);
 
   return (
     <section className="min-h-screen pt-32 pb-16 bg-green-100">

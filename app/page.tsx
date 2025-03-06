@@ -152,7 +152,7 @@ const HeroParallax = () => {
 //   )
 // }
 const FloatingIcons = () => {
-  const icons = [Eye, BookOpen, Brain, Headphones, HandMetal];
+  const icons = useMemo(() => [Eye, BookOpen, Brain, Headphones, HandMetal], []);
   const [iconStyles, setIconStyles] = useState<
     { top: string; left: string; size: number; delay: number; duration: number }[]
   >([]);
@@ -167,7 +167,7 @@ const FloatingIcons = () => {
         duration: 5 + Math.random() * 5,
       }))
     );
-  }, []);
+  }, [icons]); // Now 'icons' is stable
 
   return (
     <div className="absolute inset-0 overflow-hidden">
@@ -195,6 +195,8 @@ const FloatingIcons = () => {
     </div>
   );
 };
+
+
 
 
 const TestimonialCard = ({ quote, author, role }: { quote: string; author: string; role: string }) => {
@@ -271,7 +273,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-lg text-gray-600 dark:text-gray-300"
             >
-              VARK stands for Visual, Aural, Read/Write, and Kinesthetic. It's a model that helps identify how you
+              VARK stands for Visual, Aural, Read/Write, and Kinesthetic. It&apos;s a model that helps identify how you
               prefer to learn and process information.
             </motion.p>
           </div>

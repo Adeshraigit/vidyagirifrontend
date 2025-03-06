@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth, useUser } from "@clerk/clerk-react"
 import { useRouter } from "next/navigation";    
+import Image from 'next/image';
 
 const Visual = () => {
   const [query, setQuery] = useState('');
@@ -9,12 +10,45 @@ const Visual = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const generateDiagram = async (e: any) => {
+  // const generateDiagram = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   setError(null);
+  //   setDiagramUrl(null);
+
+  //   try {
+  //     const response = await fetch('http://localhost:3005/diagram', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ query }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+
+  //     const data = await response.json();
+
+  //     if (data.message && data.message.image) {
+  //       setDiagramUrl(data.message.image);
+  //     } else {
+  //       throw new Error('No diagram URL in response');
+  //     }
+  //   } catch (err: Error | any) {
+  //     console.error('Diagram generation error:', err);
+  //     setError(err.message || 'Failed to generate diagram');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  const generateDiagram = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
     setDiagramUrl(null);
-
+  
     try {
       const response = await fetch('http://localhost:3005/diagram', {
         method: 'POST',
@@ -23,25 +57,29 @@ const Visual = () => {
         },
         body: JSON.stringify({ query }),
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      const data = await response.json();
-
-      if (data.message && data.message.image) {
+  
+      const data: { message?: { image?: string } } = await response.json();
+  
+      if (data.message?.image) {
         setDiagramUrl(data.message.image);
       } else {
         throw new Error('No diagram URL in response');
       }
-    } catch (err: any) {
-      console.error('Diagram generation error:', err);
-      setError(err.message || 'Failed to generate diagram');
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to generate diagram';
+  
+      console.error('Diagram generation error:', errorMessage);
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   const { userId, isLoaded } = useAuth();
   const router = useRouter();
@@ -52,7 +90,7 @@ const Visual = () => {
     if(isLoaded && !userId){
       router.push("/sign-in");
     }
-  }, [userId, isLoaded]);
+  }, [userId, isLoaded, router]);
 
   return (
     <section className="min-h-screen pt-32 pb-16 bg-[#f0f9f0] flex flex-col items-center justify-center p-6">
@@ -91,7 +129,7 @@ const Visual = () => {
           <div className="mt-10 p-6 bg-emerald-50 rounded-lg shadow-md border border-emerald-200">
             <h3 className="text-2xl font-bold text-emerald-700 mb-4">Generated Diagram</h3>
             <div className="prose max-w-none mb-6">
-              <img src={diagramUrl} alt="Generated Diagram" className="max-w-full h-auto rounded" />
+              <Image src={diagramUrl} alt="Generated Diagram" className="max-w-full h-auto rounded" />
             </div>
           </div>
         )}
