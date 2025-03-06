@@ -1,7 +1,7 @@
 
 'use client'
 import type React from "react"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight, BookOpen, Brain, Lightbulb, Headphones, Eye, HandMetal, ChevronRight } from "lucide-react"

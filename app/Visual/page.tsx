@@ -6,9 +6,9 @@ import Image from 'next/image';
 
 const Visual = () => {
   const [query, setQuery] = useState('');
-  const [diagramUrl, setDiagramUrl] = useState(null);
+  const [diagramUrl, setDiagramUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   // const generateDiagram = async (e: React.FormEvent) => {
   //   e.preventDefault();
