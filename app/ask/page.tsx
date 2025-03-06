@@ -15,6 +15,10 @@ function Ask() {
     if(isLoaded && !userId){
       router.push("/sign-in");
     }
+    if(!user?.publicMetadata.formSubmitted){
+      router.push("/questionnaire");
+      alert("Please fill out the questionnaire first");
+    }
     if(isLoaded && userId && user?.publicMetadata.preference){
       router.push(`/${preference}`);
     } 
