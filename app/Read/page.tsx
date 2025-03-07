@@ -28,12 +28,25 @@ const learningStyles = [
   { id: "kinesthetic", name: "🖐️ Kinesthetic" },
 ];
 
-const highlightKeywords = (text: string) => {
+// const highlightKeywords = (text: string) => {
+//   const keywords = ["React", "JavaScript", "TypeScript", "API", "backend"]; // Customize these
+//   const regex = new RegExp(`\\b(${keywords.join("|")})\\b`, "gi");
+  
+//   return text.replace(regex, (match) => `**${match}**`); // Wrap in markdown bold (**bold**)
+// };
+
+const highlightKeywords = (text?: string) => {
+  if (!text) {
+    console.error("highlightKeywords: text is undefined or null");
+    return ""; // Return an empty string or handle appropriately
+  }
+
   const keywords = ["React", "JavaScript", "TypeScript", "API", "backend"]; // Customize these
   const regex = new RegExp(`\\b(${keywords.join("|")})\\b`, "gi");
-  
+
   return text.replace(regex, (match) => `**${match}**`); // Wrap in markdown bold (**bold**)
 };
+
 
 const Read: React.FC = () => {
   const [message, setMessage] = useState("");
