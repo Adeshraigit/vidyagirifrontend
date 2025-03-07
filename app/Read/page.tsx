@@ -306,7 +306,7 @@ const Read: React.FC = () => {
         const data: ResponseData = JSON.parse(text); // Try parsing JSON
         console.log("API Response:", data);
         setResponseData(data);
-      } catch (jsonError) {
+      } catch {
         console.error("Response is not JSON:", text); // Log unexpected response
       }
     } catch (error) {
