@@ -40,6 +40,7 @@ const Kinesthetic: React.FC = () => {
     try {
       const res = await fetch("https://vidyagiribackend.vercel.app/kinesthetic", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: query,

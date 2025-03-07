@@ -177,6 +177,7 @@ const Audio: React.FC = () => {
     try {
       const res = await fetch("https://vidyagiribackend.vercel.app/audio", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: query,
