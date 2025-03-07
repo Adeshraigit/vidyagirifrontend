@@ -165,38 +165,80 @@ const Audio: React.FC = () => {
     }
   };
 
+  // const submitQuery = async (query: string) => {
+  //   if (!query.trim()) return;
+
+  //   // Stop any ongoing speech.
+  //   stopSpeech();
+
+  //   setLoading(true);
+  //   setResponseData(null);
+
+  //   try {
+  //     const res = await fetch("https://vidyagiribackend.vercel.app/audio", {
+  //       method: "POST",
+  //       credentials: "include",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         message: query,
+  //         preferredStyle: selectedStyle.id,
+  //       }),
+  //     });
+
+  //     const data: ResponseData = await res.json();
+  //     setResponseData(data);
+  //     // Start speaking from the beginning.
+  //     speakText(data.answer, 0);
+  //   } catch (error) {
+  //     console.error("Error fetching response:", error);
+  //   }
+
+  //   setLoading(false);
+  // };
+
+  // Called when the user releases the draggable progress bar.
+  
   const submitQuery = async (query: string) => {
     if (!query.trim()) return;
-
-    // Stop any ongoing speech.
-    stopSpeech();
-
     setLoading(true);
     setResponseData(null);
-
+    setMessage(query);
+  
+    if (!userId) {
+      console.error("User is not authenticated");
+      return;
+    }
+  
     try {
-      const res = await fetch("https://vidyagiribackend.vercel.app/audio", {
+      const res = await fetch("https://vidyagiribackend.vercel.app/", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: query,
           preferredStyle: selectedStyle.id,
+          returnSources: true,
+          returnFollowUpQuestions: true,
+          userId: userId, // Include userId in the request
         }),
       });
-
-      const data: ResponseData = await res.json();
-      setResponseData(data);
-      // Start speaking from the beginning.
-      speakText(data.answer, 0);
+  
+      // Ensure response is JSON
+      const text = await res.text(); // Read response as text first
+      try {
+        const data: ResponseData = JSON.parse(text); // Try parsing JSON
+        console.log("API Response:", data);
+        setResponseData(data);
+      } catch (jsonError) {
+        console.error("Response is not JSON:", text); // Log unexpected response
+      }
     } catch (error) {
       console.error("Error fetching response:", error);
     }
-
     setLoading(false);
   };
+  
 
-  // Called when the user releases the draggable progress bar.
   const handleSeek = (percentage: number) => {
     if (responseData) {
       const newTime = (percentage / 100) * totalDuration;
