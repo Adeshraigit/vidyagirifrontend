@@ -257,6 +257,7 @@ const Read: React.FC = () => {
     try {
       const res = await fetch("https://vidyagiribackend.vercel.app/", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: query,
