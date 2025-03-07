@@ -264,6 +264,7 @@ const Read: React.FC = () => {
           preferredStyle: selectedStyle.id,
           returnSources: true,
           returnFollowUpQuestions: true,
+          userId: userId
         }),
       });
       const data: ResponseData = await res.json();
