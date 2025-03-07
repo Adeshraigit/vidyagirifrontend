@@ -112,6 +112,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
 
 const Visual = () => {
   const [query, setQuery] = useState('');
@@ -209,7 +210,7 @@ const Visual = () => {
               Generated Diagram
             </h3>
             <div className="prose max-w-none mb-6">
-              <img
+              <Image
                 src={diagramUrl}
                 alt="Generated Diagram"
                 className="max-w-full h-auto rounded"

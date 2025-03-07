@@ -248,34 +248,74 @@ const Read: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [responseData, setResponseData] = useState<ResponseData | null>(null);
 
+  // const submitQuery = async (query: string) => {
+  //   if (!query.trim()) return;
+  //   setLoading(true);
+  //   setResponseData(null);
+  //   setMessage(query);
+
+  //   try {
+  //     const res = await fetch("https://vidyagiribackend.vercel.app/", {
+  //       method: "POST",
+  //       credentials: "include",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         message: query,
+  //         preferredStyle: selectedStyle.id,
+  //         returnSources: true,
+  //         returnFollowUpQuestions: true,
+  //         userId: userId
+  //       }),
+  //     });
+  //     const data: ResponseData = await res.json();
+  //     console.log("API Response:", data); // Debugging log
+  //     setResponseData(data);
+  //   } catch (error) {
+  //     console.error("Error fetching response:", error);
+  //   }
+  //   setLoading(false);
+  // };
+
   const submitQuery = async (query: string) => {
     if (!query.trim()) return;
     setLoading(true);
     setResponseData(null);
     setMessage(query);
-
+  
+    if (!userId) {
+      console.error("User is not authenticated");
+      return;
+    }
+  
     try {
       const res = await fetch("https://vidyagiribackend.vercel.app/", {
         method: "POST",
-        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: query,
           preferredStyle: selectedStyle.id,
           returnSources: true,
           returnFollowUpQuestions: true,
-          userId: userId
+          userId: userId, // Include userId in the request
         }),
       });
-      const data: ResponseData = await res.json();
-      console.log("API Response:", data); // Debugging log
-      setResponseData(data);
+  
+      // Ensure response is JSON
+      const text = await res.text(); // Read response as text first
+      try {
+        const data: ResponseData = JSON.parse(text); // Try parsing JSON
+        console.log("API Response:", data);
+        setResponseData(data);
+      } catch (jsonError) {
+        console.error("Response is not JSON:", text); // Log unexpected response
+      }
     } catch (error) {
       console.error("Error fetching response:", error);
     }
     setLoading(false);
   };
-
+  
+  
   const { userId, isLoaded } = useAuth();
   const router = useRouter();
   const { user } = useUser();
