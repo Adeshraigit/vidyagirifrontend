@@ -1,7 +1,12 @@
-import { SignUp } from '@clerk/nextjs'
+import React from 'react'
+import SignUpForm from '@/components/SignUpForm'
 
-export default function SignUpPage  () {
-  return <div className='h-screen flex items-center justify-center ' >
-    <SignUp path='/sign-up' signInUrl='/sign-in' />
-  </div> 
+function SignUpPage() {
+  return (
+    <main className="flex min-h-screen items-center justify-center px-4 bg-background">
+          <SignUpForm />
+        </main>
+  )
 }
+
+export default SignUpPage
